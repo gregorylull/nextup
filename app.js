@@ -9,13 +9,10 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
-// require neo4j
-var neo4j = require("node-neo4j");
-var neo4jURL = "http://127.0.0.1:7474";
-db = new neo4j(neo4jURL);
-
 var app = express();
 
+// neo4j 
+var neo4j = require('./neo4jfunc.js');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -34,7 +31,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+app.get('/', function (req, res) { neo4j.test(res) });
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
