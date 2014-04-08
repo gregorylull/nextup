@@ -1,0 +1,28 @@
+CREATE (d1:Doc {name: "doc1"});
+
+MATCH (d1:Doc {name: "doc1"}), (w1:Word {name: "I"})
+CREATE UNIQUE (d1)-[:TF]-(w1:Word {name: "I"});
+
+MATCH (d1:Doc {name: "doc1"})
+CREATE UNIQUE (d1)-[:TF]-(:Word {name: "like"});
+
+MATCH (d1:Doc {name: "doc1"})
+CREATE UNIQUE (d1)-[:TF]-(:Word {name: "dogs"});
+
+############
+
+CREATE (d2:Doc {name: "doc2"});
+
+MATCH (d2:Doc {name: "doc2"})
+CREATE UNIQUE (d2)-[:TF]- (w1:Word {name: "I"});
+
+MATCH (d2:Doc {name: "doc2"})
+CREATE UNIQUE (d2)-[:TF]-(w1:Word {name: "want"});
+
+MATCH (d2:Doc {name: "doc2"})
+CREATE UNIQUE (d2)-[:TF]-(w1:Word {name: "dogs"});
+
+CREATE (d1:Doc {name: "doc1"});
+
+MATCH (d1:Doc {name: "doc1"})
+CREATE UNIQUE (d1)-[:TF]-(:Word {name: "dogs"});
