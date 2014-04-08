@@ -92,10 +92,6 @@ var createDocQuery = function (doc) {
   //      if no  -> update master dict, create word node AND relationship
 */
 
-/*
-  //     check if doc word in master dict (create array of missing)
-  //      if no  -> update master dict, create word node AND relationship
-*/
 
 var createMissing = function (doc, masterDict) {
   var array = [];
@@ -177,7 +173,16 @@ var insertDocToDB = function (clientRes, doc, masterDict) {
     });
 };
 
-insertDocToDB('test', doc1 , masterDict);
+var deleteDB = function () {
+  var postData = {};
+  postData.query = "MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
+  return postData;
+};
+
+rest.postJson( url , deleteDB())
+  .on('complete', function (result, response) {
+  insertDocToDB('test', doc1 , masterDict);
+});
 
 module.exports.test = insertDocToDB;
 
