@@ -34,4 +34,5 @@ dummyJSON/*
 testCron/*
 neo4jtest.js
 realData/*
+deploy.sh
 
