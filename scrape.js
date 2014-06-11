@@ -89,7 +89,7 @@ var readabilityRequestCron = function (time, master) {
 };
 
 var popCron = function (time) {
-  time = time || '00 */1 * * * *';
+  time = time || '*/15 * * * * *';
   new CronJob(time, function(){
     console.log('popCron readability every 1 min');
 
@@ -157,16 +157,17 @@ var queryReadability = function () {
 
   if (scrapeQueue.size() > 0) {
     // firstInQueue = scrapeQueue.all()[0];
-    var d = scrapeQueue.dequeue();
-    console.log('dequeued: ', d.title);
-    console.log('next que: ', scrapeQueue.all()[0])
+    var d = scrapeQueue.first();
+    console.log('dequeued: ', d.value.title);
+    console.log('next que: ', d.next);
 
-      // if the doc object formatting and properties are valid
-      if (isRssDocValid(d)) {
+    // if the doc object formatting and properties are valid
+    if (isRssDocValid(d.value)) {
       // readableQuery(firstInQueue.link)
-      readableQuery(d.link)
+      readableQuery(d.value.link)
       .then(function (doc) {
         console.log('readableQuery worked: ', doc.title);
+        scrapeQueue.dequeue(); // dequeue the item if successful
 
         saveAsJson(doc)
         .then(function(item){
@@ -178,6 +179,11 @@ var queryReadability = function () {
       })
       .catch(function(err){
         console.log('readability did not work: ', err);
+
+        // if readability > three attemps, dequeue it
+        d.readabilityAttempts = !d.readabilityAttempts ? 1 : d.readabilityAttempts + 1;
+        if (d.readabilityAttempts >= 3) { scrapeQueue.dequeue(); }
+
       });
     }
   }

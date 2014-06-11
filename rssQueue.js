@@ -20,9 +20,24 @@ var makeScrapeQueue = function () {
   head = null;
   tail = null;
 
+  queue.first = function () {
+    return head;
+  };
+
   queue.size = function () {
     return size;
-  }
+  };
+
+  queue.addToHead = function (rssDoc) {
+    if (head === null) {
+      this.queue(rssDoc);
+    } else {
+      var node = makeScrapeNode(rssDoc);
+      node.next = head;
+      head = node;
+    }
+    return node;
+  };
   
   queue.queue = function (rssDoc) {
     var node = makeScrapeNode(rssDoc);
@@ -170,8 +185,15 @@ var executeTest = function () {
   var r10 = scrapeQueue.contains(t3) === true;
   var r11 = scrapeQueue.contains(t2) === false;
 
+  // test addToHead
+  scrapeQueue = makeScrapeQueue();
+  scrapeQueue.queue(t2);
+  scrapeQueue.addToHead(t1);
+  var r12 = scrapeQueue.first().value.title === t1.title;
+  console.log('\n r12 info: \n', 'first:', scrapeQueue.first(), 'title:', scrapeQueue.first().value.title, '\n');
 
-  console.log(r00, r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11);
+
+  console.log(r00, r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12);
   console.log('list: \n', list);
 };
 
