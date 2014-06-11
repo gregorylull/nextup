@@ -85,10 +85,15 @@ var testDir = jsonDir;
 // this cron job checks the json folder to see if there are newly added files to be inserted into the neo4j DB.
 // jsonfiles that have been inserted into the database are archived
 var startCron = function (time) {
-  time = time || "00 */15 * * * *";
+  time = time || "*/15 * * * * *";
   return new CronJob.CronJob(time, function () {
     console.log( "every 15 minutes execute checkDir");
-    checkDir(testDir);
+    // only check the directory if cosSim value is NOT being calculated
+    if (!batch.n4jState.calculatingCosSim) {
+      checkDir(testDir);
+    } else {
+      console.log("no checkDir: still calculating cos sim");
+    }
   }, null, true, "America/Los_Angeles");
 };
 
