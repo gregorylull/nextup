@@ -121,16 +121,18 @@ var populateMasterRssQueue = function (url, limit) {
 
     // check each item from the rss result and add to the queue IF
     //   1. it's not contained in scrapeQueue
-    //   2. it's not in the mongoDB TODO (add add inside mongoDBQuery)
+    //   2. it's not in the mongoDB TODO (add inside mongoDBQuery)
+    //   3. it passes our articleTypeFilter
     for (var i = 0; i < len; i++) {
       var rssObj = rssResults[i];
-      if (isRssDocValid(rssObj) && !scrapeQueue.contains(rssObj)) {
+      if (isRssDocValid(rssObj) && !scrapeQueue.contains(rssObj) && articleTypeFilter(rssObj)) {
           var filename = toFilename(rssObj);
           if (archive.indexOf(filename + '.json') === -1 && main.indexOf(filename + '.json') === -1) {
             scrapeQueue.queue(rssObj);
           }
       }
     }
+    console.log('queue all: \n', scrapeQueue.all());
     // for testing purposes
     // if (addedNew) {
     //   console.log('\ncurrent rss list: \n', scrapeQueue.all());
@@ -159,7 +161,7 @@ var queryReadability = function () {
     console.log('dequeued: ', d.title);
     console.log('next que: ', scrapeQueue.all()[0])
 
-    // if (isRssDocValid(firstInQueue)) {
+      // if the doc object formatting and properties are valid
       if (isRssDocValid(d)) {
       // readableQuery(firstInQueue.link)
       readableQuery(d.link)
@@ -263,6 +265,17 @@ var toFilename = function (item) {
           .replace(/ +?/g, '')
           .replace()
           .toLowerCase();
+};
+
+// filter to weed out articles that we don't want, e.g. comment threads on hacker news
+// returns false if we don't want it
+var articleTypeFilter = function (article) {
+  // if it is an forum / discussion thread from hacker news
+  if (article.link.match(/news.ycombinator.com/i) !== null) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 /***

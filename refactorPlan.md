@@ -5,10 +5,7 @@ TODO:
 4. updateRelatinoshipIndex - WRONG KEY, 'TF' is capitalized
 
 IN PROGRESS:
-- get rid of hacker news comment threads (askhn*)
-  + don't let mongo save it
-  + don't save as json
-  + OR, revisit the same thread for up to 1 week, and constantly update those nodes
+- IF readability does not work, add back to queue, allow 3 chances, then discard
 
 POST HR TODO (new 3.5 ram server, mongolab, transaction query):
 - transactions should not be more than 10k-50k elements...
@@ -17,7 +14,6 @@ POST HR TODO (new 3.5 ram server, mongolab, transaction query):
   + method1: same as git, we hash the filename and take the first two (or one) letters, lowercase(), and create a directory, and the file will go in there [a-z][a-z] = 26 * 26 folders
   + method2: save json file as mongo file. instead of reading directory, we query mongo for new=true / inserted_to_neo4j=false files...
 - transactions lock if the same node is being used...?
-- IF readability does not work, add back to queue, allow 3 chances, then discard
 
 - every 15 mins (900 seconds) = update all relationships?
   + only update necessary ones?
@@ -33,6 +29,10 @@ DONE:
     + 1. mv 500 files to json/ === initial batchInsert = 500 files 
     + 2. set batchInsert cron === checkDir every 30 seconds
     + 3. while COS SIM is calculating, put a file inside the directory
+- get rid of hacker news comment threads (askhn*)
+  + do not add to queue if the link points back to news.ycombinator.com
+  + OR, revisit the same thread for up to 1 week, and constantly update those nodes
+  + TEST: extra console.log, get big rss, if any of the queue's title or url contain 'ask hn'
 
 
 

@@ -87,7 +87,7 @@ var testDir = jsonDir;
 var startCron = function (time) {
   time = time || "*/15 * * * * *";
   return new CronJob.CronJob(time, function () {
-    console.log( "every 15 minutes execute checkDir");
+    console.log( "every 15 seconds execute checkDir");
     // only check the directory if cosSim value is NOT being calculated
     if (!batch.n4jState.calculatingCosSim) {
       checkDir(testDir);

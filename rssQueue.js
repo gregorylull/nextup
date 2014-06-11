@@ -59,15 +59,23 @@ var makeScrapeQueue = function () {
     }
   };
 
-  queue.contains = function (target) {
+  // filter function returns true if it contains
+  queue.contains = function (target, filter) {
     node = head;
+    if (!filter) {
+      filter = function (target, node) {
+        return node.value.title === target.title && node.value.link === target.link;
+      };
+    }
+    
     while (node !== null) {
-      if (node.value.title === target.title && node.value.link === target.link) {
+      if (filter(target, node)) {
         return true;
       } else {
         node = node.next;
       }
     }
+
     return false;
   };
 
