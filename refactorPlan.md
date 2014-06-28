@@ -5,27 +5,25 @@ TODO:
 4. updateRelatinoshipIndex - WRONG KEY, 'TF' is capitalized
 
 IN PROGRESS:
-- IF readability does not work, add back to queue, allow 3 chances, then discard
-  + add to mongo only if readable query works?
-  + readable query first, if works, then save to mongo, and save as json. if not, add back to queue
-  + TEST: add to head of master queue a fake url
-  + scrapeQueue.addToHead({title: 'this is a test', link: 'http://www.asiodnfaosidnfasdadblahbgreg./com'}); 
+- /GET request should return MOST CURRENT articles, not just a random 25. can keep this on server side, updates everytime there is a batchInsert.
 
 
 POST HR TODO (new 3.5 ram server, mongolab, transaction query):
+- IDF value stabilizes over time / size of corpus, does not need to be constantly calculated and updated. Maybe once a week or once a day at 2am is enough. 
 - transactions should not be more than 10k-50k elements...
-- How does garbage collecting work?? Why does java heap memory never decrease
 - scrapeArchive needs to have a directory system, otherwise it will be filled with over tens of thousands of files
   + method1: same as git, we hash the filename and take the first two (or one) letters, lowercase(), and create a directory, and the file will go in there [a-z][a-z] = 26 * 26 folders
   + method2: save json file as mongo file. instead of reading directory, we query mongo for new=true / inserted_to_neo4j=false files...
 - transactions lock if the same node is being used...?
-- /GET request should return MOST CURRENT articles, not just a random 25. can keep this on server side, updates everytime there is a batchInsert.
 - every 15 mins (900 seconds) = update all relationships?
   + only update necessary ones?
   + newly added nodes needs to be connected
   + maybe articles more than...1 hour old could be calculated again? after a certain threshold? no, because everything eventually is more than 1 hour old. 
+- TYPES OF UPDATES:
+  1. system wide, all documents to all documents === unnecessary because...super low ones would never be shown anyways 
+  2. newly added articles --> could be every minute: 3 minutes for 80 thousand relationships. 200 seconds for 100k. keep 20k files
 - 10,000 articles = 1 * 10^4 * 1 * 10^4 = 100,000,000 = 50 million...
-- IDF value stabilizes over time / size of corpus, does not need to be constantly calculated and updated. Maybe once a week or once a day at 2am is enough. 
+- How does garbage collecting work?? Why does java heap memory never decrease
 
 DONE:
 - CHANGE neostore.properties log to less than 5-10 gigs of hard drive space (on server)
@@ -39,6 +37,11 @@ DONE:
   + do not add to queue if the link points back to news.ycombinator.com
   + OR, revisit the same thread for up to 1 week, and constantly update those nodes
   + TEST: extra console.log, get big rss, if any of the queue's title or url contain 'ask hn'
+- IF readability does not work, add back to queue, allow 3 chances, then discard
+  + add to mongo only if readable query works?
+  + readable query first, if works, then save to mongo, and save as json. if not, add back to queue
+  + TEST: add to head of master queue a fake url
+  + scrapeQueue.addToHead({title: 'this is a test', link: 'http://www.asiodnfaosidnfasdadblahbgreg./com'}); 
 
 
 
